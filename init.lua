@@ -362,6 +362,9 @@ do
     },
   }
 
+  -- Git wrapper: `:Git` (status), `:Git blame`, etc. vim-rhubarb adds GitHub `:GBrowse`.
+  vim.pack.add { gh 'tpope/vim-fugitive', gh 'tpope/vim-rhubarb' }
+
   -- Useful plugin to show you pending keybinds.
   vim.pack.add { gh 'folke/which-key.nvim' }
   require('which-key').setup {
@@ -695,7 +698,32 @@ do
     --    https://github.com/pmizio/typescript-tools.nvim
     --
     -- But for many setups, the LSP (`ts_ls`) will work just fine
-    -- ts_ls = {},
+    --
+    -- Vue (hybrid mode, required since vue-language-server v3 dropped takeover mode):
+    --  - vtsls runs the @vue/typescript-plugin to provide TS in .vue files (goto-def, etc.).
+    --    vtsls is the TS server the Vue team recommends for Neovim; plain ts_ls has known
+    --    goto-definition gaps in .vue files (jumps to the import, not the source).
+    --  - vue_ls manages the .vue template/CSS and forwards TS requests to vtsls.
+    -- Both must be enabled together or `gd` in .vue files won't resolve.
+    vtsls = {
+      settings = {
+        vtsls = {
+          tsserver = {
+            globalPlugins = {
+              {
+                name = '@vue/typescript-plugin',
+                location = vim.fn.stdpath 'data' .. '/mason/packages/vue-language-server/node_modules/@vue/language-server',
+                languages = { 'vue' },
+                configNamespace = 'typescript',
+                enableForWorkspaceTypeScriptVersions = true,
+              },
+            },
+          },
+        },
+      },
+      filetypes = { 'javascript', 'typescript', 'javascriptreact', 'typescriptreact', 'vue' },
+    },
+    vue_ls = {},
 
     stylua = {}, -- Used to format Lua code
 
