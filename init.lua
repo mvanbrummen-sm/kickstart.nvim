@@ -641,6 +641,10 @@ do
       -- or a suggestion from your LSP for this to activate.
       map('gra', vim.lsp.buf.code_action, '[G]oto Code [A]ction', { 'n', 'x' })
 
+      -- Classic `gd` goto-definition (LSP, jumps across files). Kickstart's default
+      -- binding is `grd`; this restores `gd` over Vim's built-in local-declaration jump.
+      map('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
+
       -- WARN: This is not Goto Definition, this is Goto Declaration.
       --  For example, in C this would take you to the header.
       map('grD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
