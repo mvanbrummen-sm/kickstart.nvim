@@ -528,7 +528,7 @@ do
       local buf = event.buf
 
       -- Find references for the word under your cursor.
-      vim.keymap.set('n', 'grr', builtin.lsp_references, { buffer = buf, desc = '[G]oto [R]eferences' })
+      vim.keymap.set('n', 'gr', builtin.lsp_references, { buffer = buf, desc = '[G]oto [R]eferences' })
 
       -- Jump to the implementation of the word under your cursor.
       -- Useful when your language has ways of declaring types without an actual implementation.
@@ -1007,3 +1007,28 @@ end
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+--
+
+vim.g.netrw_winsize = 25
+vim.g.netrw_liststyle = 3
+
+local function load_pinned_files()
+  local file = io.open(".pinned_files", "r")
+  if not file then return end
+
+  for line in file:lines() do
+    -- Trim whitespace and ignore empty lines or comments
+    local filepath = line:match("^%s*(.-)%s*$")
+    if filepath ~= "" and not filepath:match("^#") then
+      vim.cmd("badd " .. vim.fn.fnameescape(filepath))
+    end
+  end
+  file:close()
+end
+
+-- Run automatically on startup
+vim.api.nvim_create_autocmd("VimEnter", {
+  callback = load_pinned_files,
+})
+
+
